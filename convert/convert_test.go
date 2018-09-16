@@ -1,6 +1,8 @@
 package convert_test
 
 import (
+	"bytes"
+	"io"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -23,30 +25,37 @@ func init() {
 var convertTests = []struct {
 	name string
 	*option.Option
+	outStream io.Writer
 }{
 	{
 		"convert from jpg to png",
 		&option.Option{FromExtension: "jpg", ToExtension: "png"},
+		new(bytes.Buffer),
 	},
 	{
 		"convert from jpg to gif",
 		&option.Option{FromExtension: "jpg", ToExtension: "gif"},
+		new(bytes.Buffer),
 	},
 	{
 		"convert from png to jpg",
 		&option.Option{FromExtension: "png", ToExtension: "jpg"},
+		new(bytes.Buffer),
 	},
 	{
 		"convert from png to gif",
 		&option.Option{FromExtension: "png", ToExtension: "gif"},
+		new(bytes.Buffer),
 	},
 	{
 		"convert from gif to jpg",
 		&option.Option{FromExtension: "gif", ToExtension: "jpg"},
+		new(bytes.Buffer),
 	},
 	{
 		"convert from gif to png",
 		&option.Option{FromExtension: "gif", ToExtension: "png"},
+		new(bytes.Buffer),
 	},
 }
 
@@ -54,7 +63,7 @@ func TestConvert_Convert(t *testing.T) {
 	for _, tt := range convertTests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			sut := convert.NewConvert(tt.Option)
+			sut := convert.NewConvert(tt.Option, tt.outStream)
 			path := testFilePath[tt.FromExtension]
 			if err := sut.Convert(path); err != nil {
 				t.Error("failed convert", err)
@@ -75,7 +84,8 @@ func createTempFile(t *testing.T) string {
 
 func TestConvert_Convert_UnsupportedExtension(t *testing.T) {
 	option := &option.Option{FromExtension: "foo", ToExtension: "bar"}
-	sut := convert.NewConvert(option)
+	outStream := new(bytes.Buffer)
+	sut := convert.NewConvert(option, outStream)
 	tempFileName := createTempFile(t)
 	defer os.Remove(tempFileName)
 	err := sut.Convert(tempFileName)

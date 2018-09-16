@@ -14,7 +14,7 @@ import (
 
 func TestCLI_Run(t *testing.T) {
 	outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-	cli := &c.CLI{OutStream: outStream, ErrStream: errStream}
+	cli := c.NewCLI(outStream, errStream)
 	args := strings.Split("convert ./../testdata", " ")
 	exitCode := cli.Run(args)
 
@@ -29,7 +29,7 @@ func TestCLI_Run(t *testing.T) {
 
 func TestCLI_Run_ParseError(t *testing.T) {
 	outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-	cli := &c.CLI{OutStream: outStream, ErrStream: errStream}
+	cli := c.NewCLI(outStream, errStream)
 	args := strings.Split("convert -foo", " ") // undefined option
 	exitCode := cli.Run(args)
 
@@ -44,7 +44,7 @@ func TestCLI_Run_ParseError(t *testing.T) {
 
 func TestCLI_Run_InvalidArgsError_NotExistDirectory(t *testing.T) {
 	outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-	cli := &c.CLI{OutStream: outStream, ErrStream: errStream}
+	cli := c.NewCLI(outStream, errStream)
 	args := strings.Split("convert ./foo", " ")
 	exitCode := cli.Run(args)
 
@@ -59,7 +59,7 @@ func TestCLI_Run_InvalidArgsError_NotExistDirectory(t *testing.T) {
 
 func TestCLI_Run_InvalidArgsError_NotDirectory(t *testing.T) {
 	outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-	cli := &c.CLI{OutStream: outStream, ErrStream: errStream}
+	cli := c.NewCLI(outStream, errStream)
 	args := strings.Split("convert ./../testdata/gopher.jpg", " ")
 	exitCode := cli.Run(args)
 
@@ -87,7 +87,7 @@ func TestCLI_Run_ProcessError_Convert(t *testing.T) {
 	defer os.Remove(tempFileName)
 
 	outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-	cli := &c.CLI{OutStream: outStream, ErrStream: errStream}
+	cli := c.NewCLI(outStream, errStream)
 	args := strings.Split("convert -from foo ./", " ")
 	exitCode := cli.Run(args)
 
