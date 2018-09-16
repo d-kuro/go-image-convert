@@ -13,7 +13,11 @@ import (
 func TestJpg_Init(t *testing.T) {
 	_, ok := di.Converts["jpg"]
 	if ok == false {
-		t.Fatal("failed not register to di.Converts")
+		t.Fatal("failed not register to di.Converts [jpg]")
+	}
+	_, ok = di.Converts["jpeg"]
+	if ok == false {
+		t.Fatal("failed not register to di.Converts [jpeg]")
 	}
 }
 

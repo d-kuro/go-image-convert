@@ -15,6 +15,7 @@ type Jpg struct{}
 
 func init() {
 	di.Register("jpg", Jpg{})
+	di.Register("jpeg", Jpg{})
 }
 
 // Decode returns image and error.
