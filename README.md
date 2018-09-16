@@ -27,9 +27,9 @@ $ ./main ~/Desktop/hoge/
 ```text
 Usage of ./main:
   -from string
-        input file extension (support: jpg/png/gif, default: jpg)
+        input file extension (support: jpg/jpeg/png/gif, default: jpg)
   -to string
-        output file extension (support: jpg/png/gif, default: png)
+        output file extension (support: jpg/jpeg/png/gif, default: png)
 ```
 
 ## GoDoc

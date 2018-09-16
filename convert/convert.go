@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"image"
+	"io"
 	"os"
 	"strings"
 
@@ -20,12 +21,13 @@ type Convert interface {
 }
 
 type convert struct {
-	option *option.Option
+	option    *option.Option
+	outStream io.Writer
 }
 
 // NewConvert is Convert interface constructor.
-func NewConvert(option *option.Option) Convert {
-	return &convert{option: option}
+func NewConvert(option *option.Option, outStream io.Writer) Convert {
+	return &convert{option: option, outStream: outStream}
 }
 
 // Convert image.
@@ -46,7 +48,7 @@ func (c *convert) Convert(path string) error {
 	if err := encode(image, toConverter, path, c.option.FromExtension, c.option.ToExtension); err != nil {
 		return err
 	}
-	fmt.Printf("%s -> to %s"+greenColor, path, c.option.ToExtension, "\tDONE\n")
+	fmt.Fprintf(c.outStream, "%s -> to %s"+greenColor, path, c.option.ToExtension, "\tDONE\n")
 	return nil
 }
 

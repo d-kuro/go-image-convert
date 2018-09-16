@@ -16,14 +16,19 @@ import (
 
 // Exit code.
 const (
-	ExitCodeOK = iota
-	ExitCodeParseFlagError
-	ExitCodeInvalidArgsError
-	ExitCodeProcessError
+	// Exclude special meaningful exit code
+	ExitCodeOK               = 0
+	ExitCodeParseFlagError   = 64
+	ExitCodeInvalidArgsError = 65
+	ExitCodeProcessError     = 66
 )
 
 type CLI struct {
-	OutStream, ErrStream io.Writer
+	outStream, errStream io.Writer
+}
+
+func NewCLI(outStream, errStream io.Writer) *CLI {
+	return &CLI{outStream: outStream, errStream: errStream}
 }
 
 // Run command.
@@ -31,14 +36,14 @@ func (c *CLI) Run(args []string) int {
 
 	var from, to string
 	flags := flag.NewFlagSet("convert", flag.ContinueOnError)
-	flags.SetOutput(c.ErrStream)
+	flags.SetOutput(c.errStream)
 	flags.StringVar(&from, "from", "jpg",
 		"input file extension (support: jpg/png/gif, default: jpg)")
 	flags.StringVar(&to, "to", "png",
 		"output file extension (support: jpg/png/gif, default: png)")
 
 	if err := flags.Parse(args[1:]); err != nil {
-		fmt.Fprintln(c.ErrStream, err.Error())
+		fmt.Fprintln(c.errStream, err.Error())
 		return ExitCodeParseFlagError
 	}
 
@@ -46,19 +51,19 @@ func (c *CLI) Run(args []string) int {
 
 	info, err := os.Stat(dirName)
 	if err != nil {
-		fmt.Fprintln(c.ErrStream, err.Error())
+		fmt.Fprintln(c.errStream, err.Error())
 		return ExitCodeInvalidArgsError
 	}
 	if info.IsDir() == false {
-		fmt.Fprintf(c.ErrStream, "%s is not directory\n", dirName)
+		fmt.Fprintf(c.errStream, "%s is not directory\n", dirName)
 		return ExitCodeInvalidArgsError
 	}
 
 	option := &option.Option{FromExtension: from, ToExtension: to}
-	convert := convert.NewConvert(option)
+	convert := convert.NewConvert(option, c.outStream)
 
 	if err := walkDirectory(dirName, from, convert); err != nil {
-		fmt.Fprintln(c.ErrStream, err.Error())
+		fmt.Fprintln(c.errStream, err.Error())
 		return ExitCodeProcessError
 	}
 
