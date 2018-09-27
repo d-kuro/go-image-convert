@@ -7,7 +7,7 @@ The Golang cli tool to convert image extension.
 <!-- markdownlint-disable MD014 -->
 
 ```bash
-$ go build main.go
+$ make
 ```
 
 <!-- markdownlint-enable MD014 -->
@@ -17,7 +17,7 @@ $ go build main.go
 <!-- markdownlint-disable MD014 -->
 
 ```bash
-$ ./main ~/Desktop/hoge/
+$ ./go-image-conv testdata/
 ```
 
 <!-- markdownlint-enable MD014 -->
